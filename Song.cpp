@@ -67,16 +67,16 @@ istream &operator>>(istream &is, Song &song)
 {
 
     //is.ignore();
-    cout << "Song Details \n";
-    cout << "Title: \n";
+    cout << "Song Details" << endl;
+    cout << "Title:" << endl;
     getline(is, song.title);
-    cout << "Artist: \n";
+    cout << "Artist:" << endl;
     getline(is, song.artist);
-    cout << "Album: \n";
+    cout << "Album:" << endl;
     getline(is, song.album);
-    cout << "Year: \n";
+    cout << "Year:" << endl;
     is >> song.year;
-    cout << "Length (in seconds): \n";
+    cout << "Length (in seconds):" << endl;
     is >> song.length;
     return is;
 }
