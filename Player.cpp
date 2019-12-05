@@ -28,13 +28,13 @@ void addNewPlaylist(string, vector<songDetails> &);
 bool Menu(Playlist &);
 void deleteSong(Playlist &);
 void addSong(Playlist &);
-void mode_change();
+void modeChange();
 Playlist playlistObject;
 
 //Main program
 int main()
 {
-  vector<songDetails> vectorOfSongs; //Vector data member to manipulate data
+  vector<songDetails> vectorOfSongs; 
   loadPlayList(vectorOfSongs);
 
   Playlist playlistObject;
@@ -70,7 +70,7 @@ int main()
       cout << endl;
       Playlist p1(vectorOfSongs[selection - 1].name);
 
-      Menu(p1); // calls menu
+      Menu(p1); 
     }
     else if (menuChoice == 2)
     {
@@ -92,10 +92,10 @@ int main()
       {
       case 1:
       {
-        Playlist p;              //Create playlist playlistObjectect.
-        p.setPName(newplaylist); // call set playlist name function
+        Playlist p;              
+        p.setPName(newplaylist); 
         addNewPlaylist(newplaylist, vectorOfSongs);
-        Menu(p); // call menu
+        Menu(p); 
       }
       break;
       case 2:
@@ -166,13 +166,25 @@ int main()
   return 0; //terminates program
 }
 
-// Displaying playlist
+/**************************************************************
+	 *                          displayPlaylists               *
+	 *                                                            *
+	 * Passed   : vector of songs     *
+	 * Purpose  : displays playlists  *
+	 * Returns  : nothing.                                          *
+	 **************************************************************/
 void displayPlaylists(vector<songDetails> &vectorOfSongs)
 {
   for (int forLoopCounter = 0, j = 1; forLoopCounter < vectorOfSongs.size(); forLoopCounter++, j++)
     cout << j << " " << vectorOfSongs[forLoopCounter].name << endl;
 }
-//Loads playlists into vector
+/**************************************************************
+	 *                          loadPlaylist              *
+	 *                                                            *
+	 * Passed   : vector of songs    *
+	 * Purpose  : loads playlists for menu
+	 * Returns  : nothing.                                          *
+	 **************************************************************/
 void loadPlayList(vector<songDetails> &vectorOfSongs)
 {
 
@@ -195,7 +207,13 @@ void loadPlayList(vector<songDetails> &vectorOfSongs)
   }
   in.close();
 }
-//Menu for the player
+/**************************************************************
+	 *                          Menu                         *
+	 *                                                            *
+	 * Passed   : song object                   *
+	 * Purpose  : Displays menu for user                     *
+	 * Returns  : Boolean value                                         *
+	 **************************************************************/
 bool Menu(Playlist &playlist)
 {
   bool menuOption;
@@ -233,7 +251,7 @@ bool Menu(Playlist &playlist)
     break;
 
     case 'M':
-      mode_change();
+      modeChange();
       break;
 
     case 'S':
@@ -250,7 +268,14 @@ bool Menu(Playlist &playlist)
   return true;
 }
 
-//Adds a new playlist that can be manipulated
+
+/**************************************************************
+	 *                          addNewPlaylist                          *
+	 *                                                            *
+	 * Passed   : string, vector of songs                   *
+	 * Purpose  : adds new playlist                    *
+	 * Returns  : nothing.                                          *
+	 **************************************************************/
 void addNewPlaylist(string playlistName, vector<songDetails> &v_song)
 {
   songDetails listOfSongs = {playlistName, StringHelper::stou(playlistName)};
@@ -261,7 +286,13 @@ void addNewPlaylist(string playlistName, vector<songDetails> &v_song)
   out.close();
 }
 
-//Adds a song to chosen playlist by the user.
+/**************************************************************
+	 *                          addSong                          *
+	 *                                                            *
+	 * Passed   : playlist object                   *
+	 * Purpose  : adds song to playlist                     *
+	 * Returns  : nothing.                                          *
+	 **************************************************************/
 void addSong(Playlist &playlist)
 {
   cin.ignore();
@@ -278,7 +309,13 @@ void addSong(Playlist &playlist)
   out << s;
 }
 
-// Function erases the song from the playlist.
+/**************************************************************
+	 *                          deleteSong                          *
+	 *                                                            *
+	 * Passed   : playlist object                   *
+	 * Purpose  : deletes song from playlist                     *
+	 * Returns  : nothing.                                          *
+	 **************************************************************/
 void deleteSong(Playlist &playlist)
 {
   cin.ignore();
@@ -307,8 +344,14 @@ void deleteSong(Playlist &playlist)
     out << temp[forLoopCounter] << endl;
 }
 
-//Changes the mode of the playlists which dictates how the songs will paly.
-void mode_change()
+/**************************************************************
+	 *                          modeChange                          *
+	 *                                                            *
+	 * Passed   : nothing                  *
+	 * Purpose  : changes mode of playlist                     *
+	 * Returns  : nothing.                                          *
+	 **************************************************************/
+void modeChange()
 {
   bool good;
 
