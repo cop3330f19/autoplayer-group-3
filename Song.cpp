@@ -1,14 +1,19 @@
+//Name of the file: Player.cpp
+//Group number and member names: Jeffrey Washington, Roderick Harris, Shatoria Poole
+//Date last edited: 12/4/2019
+//Purpose of the program: Player that plays songs from user created playlist, create new playlist, merge playlist, and intersect them.
+
 #include <iostream>
 #include <string>
 #include <iomanip>
 #include <cstdlib>
-
 #include "Song.h"
 #include "Playlist.h"
 #include "StringHelper.h"
 
 using namespace std;
 
+//Constructors
 Song::Song()
 {
     title = "";
@@ -18,12 +23,12 @@ Song::Song()
     year = 0;
 }
 
-Song::Song(std::string title, std::string artist, std::string album, int length, int year)
+Song::Song(string title, string artist, string album, int length, int year)
 {
     set(title, artist, album, length, year);
 }
 
-void Song::set(std::string title, std::string artist, std::string album, int length, int year)
+void Song::set(string title, string artist, string album, int length, int year)
 {
     this->title = title;
     this->artist = artist;
@@ -32,54 +37,51 @@ void Song::set(std::string title, std::string artist, std::string album, int len
     this->year = year;
 }
 
-std::ostream &operator<<(std::ostream &os, const Song &song)
+ostream &operator<<(ostream &os, const Song &song)
 {
-    os << song.title << " " << song.artist << " " << song.album << " " << song.year << " " << song.length << endl;
+    os << song.title << " " << song.artist << " " << song.album << " " << song.year << " " << song.length; // output to console
+    return os;
+}
+ofstream &operator<<(ofstream &os, const Song &song)
+{
+    os << song.title << "," << song.artist << "," << song.album << "," << song.year << "," << song.length; //output to file
     return os;
 }
 
-std::ofstream &operator<<(std::ofstream &os, const Song &song)
-{
-    os << song.title << "," << song.artist << "," << song.album << "," << song.year << "," << song.length << endl;
+fstream &operator>>(fstream &is, Song &song)
+{ //input from file
+    string placeholder;
+
+    getline(is, song.title, ',');
+    getline(is, song.artist, ',');
+    getline(is, song.album, ',');
+    getline(is, placeholder, ',');
+    song.year = atoi(placeholder.c_str());
+    getline(is, placeholder);
+    song.length = atoi(placeholder.c_str());
+
+    return is;
 }
 
-std::istream &operator>>(std::istream &is, Song &song)
+istream &operator>>(istream &is, Song &song)
 {
-    string title, artist, album;
-    int year, length;
+
+    //is.ignore();
     cout << "Song Details \n";
     cout << "Title: \n";
-    getline(is, title);
+    getline(is, song.title);
     cout << "Artist: \n";
-    getline(is, artist);
+    getline(is, song.artist);
     cout << "Album: \n";
-    getline(is, album);
+    getline(is, song.album);
     cout << "Year: \n";
-    is >> year;
+    is >> song.year;
     cout << "Length (in seconds): \n";
-    is >> length;
-    song.set(title,artist, album, length, year);
+    is >> song.length;
     return is;
 }
 
-std::ifstream &operator>>(std::ifstream &is, Song &song)
+bool operator==(const Song &lhs, const Song &rhs)
 {
-    string temp;
-
-    getline(is, temp, ',');
-    song.title = temp;
-    getline(is, temp, ',');
-    song.artist = temp;
-    getline(is, temp, ',');
-    song.album = temp;
-    getline(is, temp, ',');
-    song.year = atoi(temp.c_str());
-    getline(is, temp);
-    song.length = atoi(temp.c_str());
-    return is;
-}
-
-bool operator == (const Song &lhs, const Song &rhs)
-{
-    return (lhs.title == rhs.title && lhs.artist == rhs.artist);
+    return (lhs.title == rhs.title && lhs.artist == rhs.artist); // compare two song objects for equality
 }

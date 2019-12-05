@@ -1,3 +1,8 @@
+//Name of the file: Player.cpp
+//Group number and member names: Jeffrey Washington, Roderick Harris, Shatoria Poole
+//Date last edited: 12/4/2019
+//Purpose of the program: Player that plays songs from user created playlist, create new playlist, merge playlist, and intersect them.
+
 #include <vector>
 #include <string>
 #include <iostream>
@@ -10,12 +15,11 @@
 
 using namespace std;
 
-char Playlist::option = 'N';
+char Playlist::option = 'N'; //Normal is the mode for the playlist
 
 void Playlist::addSong(Song &s1)
 {
-
-    lsong.push_back(s1);
+    listOfSongs.push_back(s1); // Songs pushed back in vector
 }
 
 void Playlist::deleteSong(Song &deletesong)
@@ -23,22 +27,22 @@ void Playlist::deleteSong(Song &deletesong)
 
     bool valid;
     valid = false;
-    for (int i = 0; i < lsong.size(); i++)
-    { //Start of for loop
-        if (lsong[i] == deletesong)
+    for (int iterator = 0; iterator < listOfSongs.size(); iterator++)
+    {
+        if (listOfSongs[iterator] == deletesong)
         {
             valid = true;
-            lsong.erase(lsong.begin() + i);
+            listOfSongs.erase(listOfSongs.begin() + iterator);
         }
-    } // End the loop
+    }
 }
 
-std::vector<Song> Playlist::getSong()
+vector<Song> Playlist::getSong()
 {
-    return lsong;
+    return listOfSongs;
 }
 
-void Playlist::intersect(Playlist &p2)
+Playlist Playlist::intersectPlaylist(Playlist &p2)
 {
 
     Playlist result;
@@ -47,27 +51,27 @@ void Playlist::intersect(Playlist &p2)
 
     valid = false;
 
-    for (int i = 0; i < lsong.size(); i++)
-    {
-        for (int j = 0; j < temp.size(); j++)
+    for (int iterator = 0; iterator < listOfSongs.size(); iterator++) //Function sees what songs are similar between playlists .
+    {                                                                 //and returns a playlist which contains all the similar songs
+        for (int forLoopIterator = 0; forLoopIterator < temp.size(); forLoopIterator++)
         {
-            if (lsong[i] == temp[j] && search(result.getSong(), lsong[i]))
+            if (listOfSongs[iterator] == temp[forLoopIterator] && search(result.getSong(), listOfSongs[iterator]))
 
                 valid = true;
 
-            result.addSong(lsong[i]);
+            result.addSong(listOfSongs[iterator]);
         }
     }
-    //return result;
+    return result;
 }
 
-bool Playlist::search(vector<Song> b, Song &g)
+bool Playlist::search(vector<Song> b, Song &g) //Linear search for songs.
 {
     bool valid;
 
     valid = false;
-    for (int i = 0; i < b.size(); i++)
-        if (b[i] == g)
+    for (int iterator = 0; iterator < b.size(); iterator++)
+        if (b[iterator] == g)
             valid = true;
     return valid;
 }
@@ -81,37 +85,61 @@ Playlist operator+(Playlist &p1, Playlist &p2)
 
     valid = false;
 
-    for (int i = 0; i < temp.size(); i++)
+    for (int iterator = 0; iterator < temp.size(); iterator++)
     {
 
         valid = true;
 
-        merge.addSong(temp[i]);
+        merge.addSong(temp[iterator]);
     }
     return Playlist(merge);
 }
-
-void Playlist::play()
+Playlist operator+(Playlist &p1, Song &s1)
 {
+    Playlist a1;
+    a1 = p1;
+    a1.addSong(s1);
+    return Playlist(a1);
+}
 
+Playlist operator-(Playlist &p1, Song &s1)
+{
+    Playlist d1;
+    d1 = p1;
+    d1.deleteSong(s1);
+    return d1;
+}
+
+ostream &operator<<(ostream &os, const Playlist &p1)
+{
+    for (int iterator = 0; iterator < p1.listOfSongs.size(); iterator++)
+    {
+        os << p1.listOfSongs[iterator];
+    }
+    return os;
+}
+
+void Playlist::play() //Function prints the song based on the modes.
+{
     if (option == 'N' || option == 'n')
     {
-        currentsong++;
-        if (currentsong > lsong.size())
-            cout << lsong[currentsong] << endl;
+        currentSongInPlaylist++;
+        if (currentSongInPlaylist < listOfSongs.size())
+            cout << listOfSongs[currentSongInPlaylist] << endl;
         else
-            cout << "There are no more songs to play in the plalist.";
+
+            cout << "There are no more songs to play in the plalist." << endl;
     }
     else if (option == 'R' || option == 'r')
     {
-        cout << lsong[currentsong] << endl;
+        cout << listOfSongs[currentSongInPlaylist] << endl;
     }
     else if (option == 'L' || option == 'l')
     {
-        currentsong++;
-        if (currentsong > lsong.size())
-            currentsong = 0;
-        cout << lsong[currentsong] << endl;
+        currentSongInPlaylist++;
+        if (currentSongInPlaylist > listOfSongs.size())
+            currentSongInPlaylist = 0;
+        cout << listOfSongs[currentSongInPlaylist] << endl;
     }
 }
 
@@ -120,35 +148,32 @@ void Playlist::mode(char option)
     Playlist::option = option;
 }
 
-void Playlist::setPName(std::string pname)
+void Playlist::setPName(string pname)
 {
     p_name = pname;
 }
-std::string Playlist::getPName()
+string Playlist::getPlaylistname()
 {
     return p_name;
 }
-Playlist::Playlist()
+Playlist::Playlist() //base contructor
 {
     p_name = "";
 }
-Playlist::Playlist(std::string name)
+Playlist::Playlist(string name) //overloaded constructor
 {
     setPName(name);
     string play_listname = name + ".playlist";
     play_listname = StringHelper::stou(play_listname);
 
-    ifstream in;
-    in.open(play_listname.c_str());
+    fstream in;
+    in.open(play_listname.c_str(), ios::in);
     Song s;
     int k = 0;
-    if (in)
+    while (in >> s)
     {
-        while (in)
-        {
-            in >> s;
-            cout << s << endl;
-            lsong.push_back(s);
-        }
+
+        listOfSongs.push_back(s);
     }
+    in.close();
 }

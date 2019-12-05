@@ -1,3 +1,9 @@
+//Name of the file: Player.cpp
+//Group number and member names: Jeffrey Washington, Roderick Harris, Shatoria Poole
+//Date last edited: 12/4/2019
+//Purpose of the program: Player that plays songs from user created playlist, create new playlist, merge playlist, and intersect them.
+
+//Header files
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -5,162 +11,169 @@
 #include "Song.h"
 #include "StringHelper.h"
 
+//Standard name space included
 using namespace std;
 
-struct songList
+//Structure to get filenames
+struct songDetails
 {
   string name;
   string filename;
 };
+//Function prototypes
 
-void loadPlayList(Playlist &, vector<songList> &);
-void displayPlaylists(vector<songList> &);
-void addNewPlaylist(string, vector<songList> &);
+void loadPlayList(vector<songDetails> &);
+void displayPlaylists(vector<songDetails> &);
+void addNewPlaylist(string, vector<songDetails> &);
 bool Menu(Playlist &);
 void delete_Song(Playlist &);
 void add_Song(Playlist &);
 void mode_change();
-Playlist obj;
+Playlist playlistObject;
+
+//Main program
 int main()
 {
-  vector<songList> v_songs;
+  vector<songDetails> vectorOfSongs; //Vector data member to manipulate data
+  loadPlayList(vectorOfSongs);
 
-  loadPlayList(obj, v_songs);
-  
-
-  int choice;
-  int select;
+  Playlist playlistObject;
+  int menuChoice;
+  int selection;
   string newplaylist;
-  cout << "----------WELCOME to the AutoPlayer----------" << endl;
-  cout << "You currently have 4 playlist(s)." << endl;
 
+  //Beginning of program
+  cout << "----------WELCOME to the AutoPlayer----------" << endl;
   do
   {
-    cout << "1 - Open an exisiting playlist" << endl;
-    cout << "2 - Create new list" << endl;
-    cout << "3 - Exit" << endl;
-    cout << "Selection: ";
-    cin >> choice;
-  } while (choice != 1 && choice != 2 && choice != 3);
-
-  if (choice == 1)
-  {
-    cout << "Please select a playlist from below: \n";
-    displayPlaylists(v_songs);
-
     do
     {
+      cout << "1 - Open an exisiting playlist" << endl;
+      cout << "2 - Create new list" << endl;
+      cout << "3 - Exit" << endl;
       cout << "Selection: ";
-      cin >> select;
-      if (select < 1 || select > v_songs.size())
-        cout << "Invalid selection" << endl;
-    } while (select < 1 || select > v_songs.size());
-    cout << endl;
-    Playlist p1(v_songs[select - 1].name);
+      cin >> menuChoice;
+    } while (menuChoice != 1 && menuChoice != 2 && menuChoice != 3);
 
-    Menu(p1);
-  }
-  else if (choice == 2)
-  {
-    do
+    if (menuChoice == 1)
     {
-      cout << "1 - Create new empty list" << endl;
-      cout << "2 - Merge 2 exisitng playlists" << endl;
-      cout << "3 - Intersect 2 exisinting playlists" << endl;
-      cout << "Selection: ";
-      cin >> select;
-    } while (select != 1 && select != 2 && select != 3);
+      cout << "Please select a playlist from below: " << endl;
+      displayPlaylists(vectorOfSongs);
 
-    cin.ignore();
+      do
+      {
+        cout << "Selection: ";
+        cin >> selection;
+        if (selection < 1 || selection > vectorOfSongs.size())
+          cout << "Invalid selection" << endl;
+      } while (selection < 1 || selection > vectorOfSongs.size());
+      cout << endl;
+      Playlist p1(vectorOfSongs[selection - 1].name);
 
-    cout << "Name of new playlist (cannot contain underscores): ";
-    getline(cin, newplaylist);
-  }
-
-  switch (select)
-  {
-  case 1:
-  {
-    Playlist p;
-    p.setPName(newplaylist);
-  //  addNewPlaylist(newplaylist, v_songs);
-    Menu(p);
-  }
-  break;
-  case 2:
-  {
-    cout << "\nWhich of the following playlists would you like to merge? " << endl;
-    displayPlaylists(v_songs);
-    int list[2];
-
-    for (int i = 0, j = 1; j < 3; j++, i++)
+      Menu(p1); // calls menu
+    }
+    else if (menuChoice == 2)
     {
       do
       {
-        cout << "Playlist " << j << ": ";
-        cin >> list[i];
-        if (list[i] < 1 || list[i] > v_songs.size())
-          cout << "Invalid selection" << endl;
+        cout << "1 - Create new empty list" << endl;
+        cout << "2 - Merge 2 exisitng playlists" << endl;
+        cout << "3 - Intersect 2 exisinting playlists" << endl;
+        cout << "Selection: ";
+        cin >> selection;
+      } while (selection != 1 && selection != 2 && selection != 3);
 
-      } while (list[i] < 1 || list[i] > v_songs.size());
-    }
+      cin.ignore();
 
-    Playlist p1(v_songs[list[0] - 1].name);
-    Playlist p2(v_songs[list[1] - 1].name);
+      cout << "Name of new playlist (cannot contain underscores): ";
+      getline(cin, newplaylist);
 
-    Playlist p3 = p1 + p2;
-
-    p3.setPName(newplaylist);
-    //(NEEDS TO BE FIXED) p3.writeToFile(p3, *******?);
-    addNewPlaylist(newplaylist, v_songs);
-    while (Menu(p3))
-      ;
-  }
-  break;
-  case 3:
-  {
-    cout << "\nWhich of the following playlists would you like to intersect? " << endl;
-    displayPlaylists(v_songs);
-    int pLists[2];
-
-    for (int i = 0, j = 1; j < 3; j++, i++)
-    {
-      do
+      switch (selection)
       {
-        cout << "Playlist " << j << ": ";
-        cin >> pLists[i];
-        if (pLists[i] < 1 || pLists[i] > v_songs.size())
-          cout << "Invalid selection" << endl;
+      case 1:
+      {
+        Playlist p;              //Create playlist playlistObjectect.
+        p.setPName(newplaylist); // call set playlist name function
+        addNewPlaylist(newplaylist, vectorOfSongs);
+        Menu(p); // call menu
+      }
+      break;
+      case 2:
+      {
+        cout << endl
+             << "Which of the following playlists would you like to merge? " << endl;
+        displayPlaylists(vectorOfSongs);
+        int listOfSongs[2];
 
-      } while (pLists[i] < 1 || pLists[i] > v_songs.size());
+        for (int forLoopCounter = 0, j = 1; j < 3; j++, forLoopCounter++)
+        {
+          do
+          {
+            cout << "Playlist " << j << ": ";
+            cin >> listOfSongs[forLoopCounter];
+            if (listOfSongs[forLoopCounter] < 1 || listOfSongs[forLoopCounter] > vectorOfSongs.size())
+              cout << "Invalid selection" << endl;
+
+          } while (listOfSongs[forLoopCounter] < 1 || listOfSongs[forLoopCounter] > vectorOfSongs.size());
+        }
+
+        Playlist p1(vectorOfSongs[listOfSongs[0] - 1].name);
+        Playlist p2(vectorOfSongs[listOfSongs[1] - 1].name);
+
+        Playlist p3 = p1 + p2;
+
+        p3.setPName(newplaylist);
+        addNewPlaylist(newplaylist, vectorOfSongs);
+        while (Menu(p3))
+          ;
+      }
+      break;
+      case 3:
+      {
+        cout << endl
+             << "Which of the following playlists would you like to intersect? " << endl;
+        displayPlaylists(vectorOfSongs);
+        int listOfSongs[2];
+
+        for (int forLoopCounter = 0, j = 1; j < 3; j++, forLoopCounter++)
+        {
+          do
+          {
+            cout << "Playlist " << j << ": ";
+            cin >> listOfSongs[forLoopCounter];
+            if (listOfSongs[forLoopCounter] < 1 || listOfSongs[forLoopCounter] > vectorOfSongs.size())
+              cout << "Invalid selection" << endl;
+
+          } while (listOfSongs[forLoopCounter] < 1 || listOfSongs[forLoopCounter] > vectorOfSongs.size());
+        }
+
+        Playlist p1(vectorOfSongs[listOfSongs[0] - 1].name);
+        Playlist p2(vectorOfSongs[listOfSongs[1] - 1].name);
+
+        Playlist p3 = p1.intersectPlaylist(p2);
+
+        addNewPlaylist(newplaylist, vectorOfSongs);
+        while (Menu(p3))
+          ;
+      }
+      break;
+      } // Switch cases end
+
+      cout << endl;
     }
+  } while (menuChoice != 3); // entire do loop is finished
 
-    Playlist p1(v_songs[pLists[0] - 1].name);
-    Playlist p2(v_songs[pLists[1] - 1].name);
-
-    //(NEEDS TO BE FIXED) Playlist p3 = p1.intersect(p2, *****?);
-
-    addNewPlaylist(newplaylist, v_songs);
-    //while(Menu(p3));
-  }
-  break;
-  }
-
-  cout << endl;
-
-  while (choice != 3)
-    ;
-
-  return 0;
+  return 0; //terminates program
 }
 
-void displayPlaylists(vector<songList> &v_songs)
+// Displaying playlist
+void displayPlaylists(vector<songDetails> &vectorOfSongs)
 {
-  for (int i = 0, j = 1; i < v_songs.size(); i++, j++)
-    cout << j << " " << v_songs[i].name << endl;
+  for (int forLoopCounter = 0, j = 1; forLoopCounter < vectorOfSongs.size(); forLoopCounter++, j++)
+    cout << j << " " << vectorOfSongs[forLoopCounter].name << endl;
 }
-
-void loadPlayList(Playlist &objTemp, vector<songList> &v_songs)
+//Loads playlists into vector
+void loadPlayList(vector<songDetails> &vectorOfSongs)
 {
 
   ifstream in;
@@ -172,10 +185,9 @@ void loadPlayList(Playlist &objTemp, vector<songList> &v_songs)
     while (in >> filename)
     {
 
-      songList l = {StringHelper::utos(filename), filename};
-      v_songs.push_back(l);
+      songDetails l = {StringHelper::utos(filename), filename};
+      vectorOfSongs.push_back(l);
     }
-      
   }
   else
   {
@@ -183,32 +195,31 @@ void loadPlayList(Playlist &objTemp, vector<songList> &v_songs)
   }
   in.close();
 }
-
+//Menu for the player
 bool Menu(Playlist &playlist)
 {
-  bool option;
-  char choice;
+  bool menuOption;
+  char menuChoice;
 
   do
   {
-    option = true;
+    menuOption = true;
 
-    cout << "You are now playing: " << playlist.getPName() << endl;
+    cout << "You are now playing: " << playlist.getPlaylistname() << endl;
     cout << "A - Add a song" << endl;
     cout << "D - Delete a song" << endl;
     cout << "P - Play a song" << endl;
     cout << "M - Set the mode" << endl;
     cout << "S - Show all songs" << endl;
-    cout << "Q - Quit\nSelection: " << endl;
+    cout << "Q - Quit" << endl
+         << "Selection: " << endl;
+    cin >> menuChoice;
 
-    cin >> choice;
-
-    switch (toupper(choice))
+    switch (toupper(menuChoice))
     {
     case 'A':
       add_Song(playlist);
       break;
-
     case 'D':
       delete_Song(playlist);
       break;
@@ -216,7 +227,7 @@ bool Menu(Playlist &playlist)
     {
       cout << endl;
       cout << "NOW PLAYING:" << endl;
-      obj.play();
+      playlistObject.play();
     }
 
     break;
@@ -229,33 +240,34 @@ bool Menu(Playlist &playlist)
     {
       std::vector<Song> temp = playlist.getSong();
 
-      for (int i = 0; i < temp.size(); i++)
-        cout << temp[i] << endl;
+      for (int forLoopCounter = 0; forLoopCounter < temp.size(); forLoopCounter++)
+        cout << temp[forLoopCounter] << endl;
     }
 
     break;
-
-    default:
-      choice = false;
     }
-  } while (choice != 'Q' && choice != 'q');
+  } while (menuChoice != 'Q' && menuChoice != 'q');
   return true;
 }
-void addNewPlaylist(string playlistName, vector<songList> &v_song)
+
+//Adds a new playlist that can be manipulated
+void addNewPlaylist(string playlistName, vector<songDetails> &v_song)
 {
-  songList list = {playlistName, StringHelper::stou(playlistName)};
-  v_song.push_back(list);
+  songDetails listOfSongs = {playlistName, StringHelper::stou(playlistName)};
+  v_song.push_back(listOfSongs);
   ofstream out;
   out.open("Playlist.list", ios::app);
   out << StringHelper::stou(playlistName) << endl;
   out.close();
 }
+
+//Adds a song to chosen playlist by the user.
 void add_Song(Playlist &playlist)
 {
   cin.ignore();
-  Song s;
+  Song s; // Create song playlistObjectect
   cin >> s;
-  string name = playlist.getPName();
+  string name = playlist.getPlaylistname();
   name + ".playlist";
   name = StringHelper::stou(name);
 
@@ -265,11 +277,11 @@ void add_Song(Playlist &playlist)
   out.open(name.c_str(), ofstream::app);
   out << s;
 }
+
+// Function erases the song from the playlist.
 void delete_Song(Playlist &playlist)
 {
   cin.ignore();
-  //bool good;
-  //good = false;
   string title, artist;
   cout << "Enter to delete: " << endl;
   cout << "Title: ";
@@ -280,7 +292,7 @@ void delete_Song(Playlist &playlist)
   Song delete_s(title, artist, "", 0, 0);
   playlist.deleteSong(delete_s);
 
-  string name = playlist.getPName();
+  string name = playlist.getPlaylistname();
   name + ".playlist";
   name = StringHelper::stou(name);
 
@@ -291,20 +303,11 @@ void delete_Song(Playlist &playlist)
   playlist.getSong();
   std::vector<Song> temp = playlist.getSong();
 
-  for (int i = 0; i < temp.size(); i++)
-    out << temp[i] << endl;
-
-  /*if(obj.deleteSong(delete_s))
-    good = true;
-    if(true){
-      cout << "Song successfully deleted" << endl;
-    }
-    else
-    {
-      cout << "No such song exists" << endl;
-    }*/
+  for (int forLoopCounter = 0; forLoopCounter < temp.size(); forLoopCounter++)
+    out << temp[forLoopCounter] << endl;
 }
 
+//Changes the mode of the playlists which dictates how the songs will paly.
 void mode_change()
 {
   bool good;
@@ -316,11 +319,12 @@ void mode_change()
     cout << "Enter mode: " << endl;
     cout << "N - Normal" << endl;
     cout << "R - Repeat" << endl;
-    cout << "L - Loop\nSelection: " << endl;
-    char option;
-    cin >> option;
+    cout << "L - Loop" << endl
+         << "Selection: " << endl;
+    char menuOption;
+    cin >> menuOption;
 
-    switch (toupper(option))
+    switch (toupper(menuOption))
     {
     case 'N':
       Playlist::mode(0);
