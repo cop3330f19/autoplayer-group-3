@@ -18,7 +18,7 @@ class Playlist
 private:
     std::vector<Song> listOfSongs;
     int currentSongInPlaylist;
-    std::string p_name;
+    std::string playlistName;
     static char option;
 
 public:

@@ -17,10 +17,26 @@ using namespace std;
 
 char Playlist::option = 'N'; //Normal is the mode for the playlist
 
+/**************************************************************
+	 *                          addSong                          *
+	 *                                                            *
+	 * Passed   : song object                   *
+	 * Purpose  : add song to vector                     *
+	 * Returns  : nothing.                                          *
+	 **************************************************************/
+
 void Playlist::addSong(Song &s1)
 {
     listOfSongs.push_back(s1); // Songs pushed back in vector
 }
+
+/**************************************************************
+	 *                          deleteSong                          *
+	 *                                                            *
+	 * Passed   : song object                   *
+	 * Purpose  : deletes song from playlist                     *
+	 * Returns  : nothing                                         *
+	 **************************************************************/
 
 void Playlist::deleteSong(Song &deletesong)
 {
@@ -37,10 +53,26 @@ void Playlist::deleteSong(Song &deletesong)
     }
 }
 
+/**************************************************************
+	 *                          toString                          *
+	 *                                                            *
+	 * Passed   : nothing                   *
+	 * Purpose  : gets list of songs for playlist                     *
+	 * Returns  : vector                                          *
+	 **************************************************************/
+
 vector<Song> Playlist::getSong()
 {
     return listOfSongs;
 }
+
+/**************************************************************
+	 *                          intersectPlaylist                          *
+	 *                                                            *
+	 * Passed   : playlist object                  *
+	 * Purpose  : sees which songs are similar and returns a new playlist                     *
+	 * Returns  : playlist object                                          *
+	 **************************************************************/
 
 Playlist Playlist::intersectPlaylist(Playlist &p2)
 {
@@ -64,6 +96,14 @@ Playlist Playlist::intersectPlaylist(Playlist &p2)
     }
     return result;
 }
+
+/**************************************************************
+	 *                          search                          *
+	 *                                                            *
+	 * Passed   : vector of songs and song object                   *
+	 * Purpose  : Linear search for songs.                    *
+	 * Returns  : Boolean value                                          *
+	 **************************************************************/
 
 bool Playlist::search(vector<Song> b, Song &g) //Linear search for songs.
 {
@@ -119,6 +159,14 @@ ostream &operator<<(ostream &os, const Playlist &p1)
     return os;
 }
 
+/**************************************************************
+	 *                          play                          *
+	 *                                                            *
+	 * Passed   : nothing                   *
+	 * Purpose  : Prints song based on modes                   *
+	 * Returns  : nothing                                          *
+	 **************************************************************/
+
 void Playlist::play() //Function prints the song based on the modes.
 {
     if (option == 'N' || option == 'n')
@@ -143,24 +191,50 @@ void Playlist::play() //Function prints the song based on the modes.
     }
 }
 
+/**************************************************************
+	 *                          mode                       *
+	 *                                                            *
+	 * Passed   : character                   *
+	 * Purpose  : changes mode of player                     *
+	 * Returns  : nothing                                       *
+	 **************************************************************/
+
 void Playlist::mode(char option)
 {
     Playlist::option = option;
 }
 
+/**************************************************************
+	 *                          setPname                          *
+	 *                                                            *
+	 * Passed   : string                  *
+	 * Purpose  : Sets playlist name                     *
+	 * Returns  : nothing                                   *
+	 **************************************************************/
+
 void Playlist::setPName(string pname)
 {
-    p_name = pname;
+    playlistName = pname;
 }
+/**************************************************************
+	 *                          getPlaylistName                          *
+	 *                                                            *
+	 * Passed   : nothing                   *
+	 * Purpose  : returns playlist name                     *
+	 * Returns  : String                                          *
+	 **************************************************************/
 string Playlist::getPlaylistname()
 {
-    return p_name;
+    return playlistName;
 }
-Playlist::Playlist() //base contructor
+
+//Constructors
+
+Playlist::Playlist()
 {
-    p_name = "";
+    playlistName = "";
 }
-Playlist::Playlist(string name) //overloaded constructor
+Playlist::Playlist(string name)
 {
     setPName(name);
     string play_listname = name + ".playlist";

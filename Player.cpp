@@ -26,8 +26,8 @@ void loadPlayList(vector<songDetails> &);
 void displayPlaylists(vector<songDetails> &);
 void addNewPlaylist(string, vector<songDetails> &);
 bool Menu(Playlist &);
-void delete_Song(Playlist &);
-void add_Song(Playlist &);
+void deleteSong(Playlist &);
+void addSong(Playlist &);
 void mode_change();
 Playlist playlistObject;
 
@@ -218,10 +218,10 @@ bool Menu(Playlist &playlist)
     switch (toupper(menuChoice))
     {
     case 'A':
-      add_Song(playlist);
+      addSong(playlist);
       break;
     case 'D':
-      delete_Song(playlist);
+      deleteSong(playlist);
       break;
     case 'P':
     {
@@ -262,7 +262,7 @@ void addNewPlaylist(string playlistName, vector<songDetails> &v_song)
 }
 
 //Adds a song to chosen playlist by the user.
-void add_Song(Playlist &playlist)
+void addSong(Playlist &playlist)
 {
   cin.ignore();
   Song s; // Create song playlistObjectect
@@ -279,7 +279,7 @@ void add_Song(Playlist &playlist)
 }
 
 // Function erases the song from the playlist.
-void delete_Song(Playlist &playlist)
+void deleteSong(Playlist &playlist)
 {
   cin.ignore();
   string title, artist;
